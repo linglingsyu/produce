@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>蔬菜比價網</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body class="bg-[url('https://hexschool.github.io/js-filter/assets/bg.jpg')]">
+    <div class="container mx-auto pt-6 pb-[70px] px-4">
+      <header class="mb-6">
+        <img src="https://hexschool.github.io/js-filter/assets/logo.jpg" />
+      </header>
+      <section class="bg-[#fffcef] p-1 rounded">
+        <div class="bg-white p-10 rounded border-2 border-[#f8d45a]">
+          <!-- 篩選 -->
+          <ul class="flex justify-center items-center gap-x-2.5 mb-5">
+            <li
+              class="rounded border-2 border-black leading-6 py-2 px-10 shadow-[0_1px_1px_0_#2A2A2A]"
+            >
+              蔬菜
+            </li>
+            <li
+              class="rounded border-2 border-black leading-6 py-2 px-10 shadow-[0_1px_1px_0_#2A2A2A]"
+            >
+              水果
+            </li>
+            <li
+              class="rounded border-2 border-black leading-6 py-2 px-10 shadow-[0_1px_1px_0_#2A2A2A]"
+            >
+              花卉
+            </li>
+          </ul>
+          <!-- 搜尋 -->
+          <div class="flex justify-center items-center gap-x-3 mb-8">
+            <div
+              class="rounded flex items-center w-[351px] bg-[#899E39] border-2 border-[#899E39]"
+            >
+              <label class="text-white m-2" for="searchInput">作物名稱 </label>
+              <input
+                type="text"
+                class="focus:outline-0 p-2 flex-grow rounded-r"
+                placeholder="請輸入作物名稱"
+                id="searchInput"
+              />
+            </div>
+            <button
+              type="button"
+              class="bg-[#899E39] leading-6 py-2 px-[54px] text-white rounded"
+              id="searchBtn"
+            >
+              搜尋
+            </button>
+          </div>
+          <!-- content -->
+          <div class="flex items-center justify-between mb-5">
+            <div>查詢椰子的比價結果</div>
+            <select class="py-2 px-3 border border-black rounded" id="">
+              <option value="0">排序篩選</option>
+              <option value="1">依上價排序</option>
+              <option value="2">依中價排序</option>
+              <option value="3">依下價排序</option>
+              <option value="4">依平均價排序</option>
+              <option value="5">依交易量排序</option>
+            </select>
+          </div>
+
+          <table class="w-full text-center">
+            <thead class="bg-[#F4F1EA]">
+              <tr>
+                <th class="py-3">作物名稱</th>
+                <th class="py-3">市場名稱</th>
+                <th class="py-3">上價</th>
+                <th class="py-3">中價</th>
+                <th class="py-3">下價</th>
+                <th class="py-3">平均價</th>
+                <th class="py-3">交易量</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <!-- <tr class="border-b border-b-2">
+                <td colspan="7" class="py-4">
+                  請輸入並搜尋想比價的作物名稱^＿^
+                </td>
+              </tr>
+              <tr class="border-b border-b-2">
+                <td colspan="7" class="py-4">資料載入中......</td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </body>
+
+  <script>
+    const state = {
+      data: {},
+      initHtml: `<tr class="border-b border-b-2"><td colspan="7" class="py-4">請輸入並搜尋想比價的作物名稱^＿^</td></tr>`,
+    }
+    state.data = getData()
+    console.log(state.data)
+    async function getData() {
+      try {
+        const response = await axios.get(
+          'https://hexschool.github.io/js-filter-data/data.json'
+        )
+        let data = []
+        for (let i = 0; i < 10; i++) {
+          data[i] = response.data[i]
+        }
+        return data
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    init(state)
+
+    function init(state) {
+      let tbody = document.querySelector('#tbody')
+      tbody.innerHTML = state.initHtml
+    }
+
+    function search() {
+      let value = document.querySelector('#searchInput').value
+      if (value.length === 0) return false
+      console.log(value)
+      let data = state.data
+      console.log(data)
+      let filterData = data.filter(function (value) {
+        return value
+      })
+      console.log(filterData)
+    }
+
+    // let tbody = document.querySelector('#tbody')
+    // for (let item of data) {
+    //   let html = `
+    //     <tr class="border-b border-b-2">
+    //       <td class="py-4 font-black">${item.作物名稱}</td>
+    //       <td class="py-4 font-black">${item.市場名稱}</td>
+    //       <td class="py-4">${item.上價}</td>
+    //       <td class="py-4">${item.中價}</td>
+    //       <td class="py-4">${item.下價}</td>
+    //       <td class="py-4">${item.平均價}</td>
+    //       <td class="py-4">${item.交易量}</td>
+    //     </tr>`
+    //   tbody.insertAdjacentHTML('beforeend', html)
+    // }
+
+    document.querySelector('#searchBtn').addEventListener('click', search)
+  </script>
+</html>
